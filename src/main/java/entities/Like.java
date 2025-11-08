@@ -12,7 +12,7 @@ public class Like {
     @JoinColumn(name = "recipe_id", nullable = true)
     private Recipe recipe;
     @ManyToOne
-    @JoinColumn(name ="comment_id", nullable = true)
+    @JoinColumn(name = "comment_id", nullable = true)
     private Comment comment;
     @ManyToOne
     @JoinColumn(name = "user_id")

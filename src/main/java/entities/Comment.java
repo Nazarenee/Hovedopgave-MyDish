@@ -21,7 +21,6 @@ public class Comment {
     private LocalDateTime created;
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();;
-
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
