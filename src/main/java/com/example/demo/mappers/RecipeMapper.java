@@ -8,6 +8,7 @@ import com.example.demo.entities.Recipe;
 import com.example.demo.entities.RecipeImage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 public class RecipeMapper {
@@ -48,6 +49,7 @@ public class RecipeMapper {
         recipe.setDescription(dto.getDescription());
         recipe.setEnableComments(dto.isEnableComments());
 
+        recipe.setCreatedAt(new Date());
         if (dto.getImages() != null) {
             recipe.setImages(dto.getImages().stream()
                     .map(imgDTO -> {
@@ -72,7 +74,6 @@ public class RecipeMapper {
         } else {
             recipe.setIngredients(new ArrayList<>());
         }
-        recipe.setAuthor(null);
 
         return recipe;
     }
