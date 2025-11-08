@@ -17,20 +17,24 @@ public class Recipe {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<Ingredient> ingredients = new ArrayList<>();;
+    private List<Ingredient> ingredients = new ArrayList<>();
+    ;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
     @Temporal(TemporalType.TIMESTAMP)
     private Date create;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();;
+    private List<Comment> comments = new ArrayList<>();
+    ;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<Like> likes = new ArrayList<>();;
+    private List<Like> likes = new ArrayList<>();
+    ;
     @ElementCollection
     @CollectionTable(name = "recipe_images", joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "image_url")
-    private List<String> images = new ArrayList<>();;
+    private List<String> images = new ArrayList<>();
+    ;
     private boolean enableComments;
 
     public Recipe(Long id, String name, String description, List<Ingredient> ingredients, User author, Date create, List<Comment> comments, List<Like> likes, List<String> images, boolean enableComments) {
@@ -46,9 +50,10 @@ public class Recipe {
         this.enableComments = enableComments;
     }
 
-    public Recipe(){
+    public Recipe() {
 
     }
+
     public Long getId() {
         return id;
     }
