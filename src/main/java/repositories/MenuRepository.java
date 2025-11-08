@@ -1,4 +1,4 @@
-package Repository;
+package repositories;
 
 import entities.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;

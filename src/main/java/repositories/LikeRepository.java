@@ -1,4 +1,4 @@
-package Repository;
+package repositories;
 
 import entities.Like;
 import org.springframework.data.jpa.repository.JpaRepository;
