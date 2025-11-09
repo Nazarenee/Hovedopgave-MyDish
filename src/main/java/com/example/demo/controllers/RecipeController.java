@@ -23,6 +23,11 @@ public class RecipeController {
         return recipeService.getAllRecipes();
     }
 
+    @GetMapping("/search")
+    public List<RecipeDTO> searchRecipe(String query){
+        return recipeService.searchRecipe(query);
+    }
+
     @GetMapping("/{id}")
     public RecipeDTO getRecipe(@PathVariable Long id) {
         return recipeService.getRecipe(id);

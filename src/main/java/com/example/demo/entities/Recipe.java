@@ -18,7 +18,7 @@ public class Recipe {
     private String description;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
-    ;
+
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private User author;

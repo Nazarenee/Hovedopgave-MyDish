@@ -27,7 +27,6 @@ public class RecipeMapper {
                     .collect(Collectors.toList()));
         }
 
-        // Map ingredients if needed
         if (recipe.getIngredients() != null) {
             dto.setIngredients(recipe.getIngredients().stream()
                     .map(ing -> {

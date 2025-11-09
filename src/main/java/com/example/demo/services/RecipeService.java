@@ -30,6 +30,11 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
+    public List<RecipeDTO> searchRecipe(String query){
+         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
+         return recipes.stream().map(RecipeMapper::toDTO).collect(Collectors.toList());
+    }
+
     public RecipeDTO getRecipe(Long id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
