@@ -18,8 +18,14 @@ public class RecipeMapper {
         dto.setName(recipe.getName());
         dto.setDescription(recipe.getDescription());
         dto.setAuthorId(recipe.getAuthor() != null ? recipe.getAuthor().getUserId() : null);
+        dto.setAuthorName(recipe.getAuthor() != null ? recipe.getAuthor().getUserName() : null);
         dto.setCreatedAt(recipe.getCreatedAt());
         dto.setEnableComments(recipe.isEnableComments());
+
+        dto.setCommentCount(recipe.getComments() != null ? recipe.getComments().size() : 0);
+        dto.setLikeCount(recipe.getLikes() != null ? recipe.getLikes().size() : 0);
+
+        dto.setLikedByCurrentUser(false);
 
         if (recipe.getImages() != null) {
             dto.setImages(recipe.getImages().stream()
@@ -37,6 +43,19 @@ public class RecipeMapper {
                         return ingDTO;
                     })
                     .collect(Collectors.toList()));
+        }
+
+        return dto;
+    }
+
+    public static RecipeDTO toDTO(Recipe recipe, Long currentUserId) {
+        RecipeDTO dto = toDTO(recipe);
+
+        if (currentUserId != null && recipe.getLikes() != null) {
+            boolean liked = recipe.getLikes().stream()
+                    .anyMatch(like -> like.getUser() != null &&
+                            like.getUser().getUserId().equals(currentUserId));
+            dto.setLikedByCurrentUser(liked);
         }
 
         return dto;

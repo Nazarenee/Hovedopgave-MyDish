@@ -9,7 +9,9 @@ public class CommentDTO {
     private Long userId;
     private Long recipeId;
     private LocalDateTime created;
-    private List<LikeDTO> likes;
+    private int likeCount;
+    private boolean likedByCurrentUser;
+    private String userName;
 
     public Long getId() {
         return id;
@@ -51,11 +53,27 @@ public class CommentDTO {
         this.created = created;
     }
 
-    public List<LikeDTO> getLikes() {
-        return likes;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLikes(List<LikeDTO> likes) {
-        this.likes = likes;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
+    }
+
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
     }
 }

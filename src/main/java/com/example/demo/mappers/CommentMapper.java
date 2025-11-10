@@ -21,11 +21,7 @@ public class CommentMapper {
             dto.setUserId(comment.getUser().getUserId());
         }
         if (comment.getLikes() != null) {
-            dto.setLikes(
-                    comment.getLikes().stream()
-                            .map(LikeMapper::toDTO)
-                            .collect(Collectors.toList())
-            );
+            dto.setLikeCount(comment.getLikes().size());
         }
         return dto;
     }

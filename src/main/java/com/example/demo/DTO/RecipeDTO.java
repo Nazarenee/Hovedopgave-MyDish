@@ -12,9 +12,11 @@ public class RecipeDTO {
     private String description;
     private List<IngredientDTO> ingredients;
     private Long authorId;
+    private String authorName;
     private Date createdAt;
-    private List<CommentDTO> comments;
-    private List<LikeDTO> likes;
+    private int commentCount;
+    private int likeCount;
+    boolean likedByCurrentUser;
     private List<RecipeImageDTO> images;
     private boolean enableComments;
 
@@ -58,6 +60,14 @@ public class RecipeDTO {
         this.authorId = authorId;
     }
 
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -66,20 +76,28 @@ public class RecipeDTO {
         this.createdAt = createdAt;
     }
 
-    public List<CommentDTO> getComments() {
-        return comments;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
-    public List<LikeDTO> getLikes() {
-        return likes;
+    public int getLikeCount() {
+        return likeCount;
     }
 
-    public void setLikes(List<LikeDTO> likes) {
-        this.likes = likes;
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
+    }
+
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
     }
 
     public List<RecipeImageDTO> getImages() {

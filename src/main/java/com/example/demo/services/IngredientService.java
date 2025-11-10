@@ -1,31 +1,48 @@
 package com.example.demo.services;
 
+import com.example.demo.DTO.IngredientDTO;
 import com.example.demo.entities.Ingredient;
+import com.example.demo.entities.Recipe;
+import com.example.demo.mappers.IngredientMapper;
 import com.example.demo.repositories.IngredientRepository;
+import com.example.demo.repositories.RecipeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class IngredientService {
     private final IngredientRepository ingredientRepository;
+    private final RecipeRepository recipeRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository){
-        this.ingredientRepository=ingredientRepository;
+    public IngredientService(IngredientRepository ingredientRepository, RecipeRepository recipeRepository) {
+        this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
     }
 
-    public List<Ingredient> getAllIngredients(){
-        return ingredientRepository.findAll();
+    public List<IngredientDTO> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        return ingredients.stream().map(IngredientMapper::toDTO).collect(Collectors.toList());
     }
 
-    public Ingredient getIngredient(Long id){
-        return ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+    public IngredientDTO getIngredient(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        return IngredientMapper.toDTO(ingredient);
     }
 
-    public Ingredient createIngredient(Ingredient ingredient){
-        return ingredientRepository.save(ingredient);
+    public IngredientDTO createIngredient(IngredientDTO ingredientDTO) {
+        Ingredient ingredient = IngredientMapper.fromDTO(ingredientDTO);
+        Recipe foundRecipe = recipeRepository.findById(ingredientDTO.getRecipeId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Recipe not found with id: " + ingredientDTO.getRecipeId()));
+        ingredient.setRecipe(foundRecipe);
+        ingredientRepository.save(ingredient);
+        return IngredientMapper.toDTO(ingredient);
     }
 
-    public void deleteIngredient(Long id){
+    public void deleteIngredient(Long id) {
         ingredientRepository.deleteById(id);
     }
 }

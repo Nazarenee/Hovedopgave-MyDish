@@ -21,10 +21,10 @@ public class CommentService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
 
-    public CommentService(CommentRepository commentRepository, RecipeRepository recipeRepository, UserRepository userRepository){
-        this.commentRepository=commentRepository;
-        this.recipeRepository=recipeRepository;
-        this.userRepository=userRepository;
+    public CommentService(CommentRepository commentRepository, RecipeRepository recipeRepository, UserRepository userRepository) {
+        this.commentRepository = commentRepository;
+        this.recipeRepository = recipeRepository;
+        this.userRepository = userRepository;
     }
 
 

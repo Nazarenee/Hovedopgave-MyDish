@@ -6,7 +6,6 @@ public class RecipeImageDTO {
     private String imageUrl;
     private Long recipeId;
 
-    // Constructors
     public RecipeImageDTO() {
     }
 
