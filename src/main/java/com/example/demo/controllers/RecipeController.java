@@ -24,7 +24,7 @@ public class RecipeController {
     }
 
     @GetMapping("/search")
-    public List<RecipeDTO> searchRecipe(String query){
+    public List<RecipeDTO> searchRecipe(@RequestParam String query){
         return recipeService.searchRecipe(query);
     }
 

@@ -42,4 +42,9 @@ public class MenuService {
     public void deleteMenu(Long id) {
         menuRepository.deleteById(id);
     }
+
+    public List<MenuDTO> searchMenu(String query) {
+        List<Menu> menus =  menuRepository.findByNameContainingIgnoreCase(query);
+       return menus.stream().map(MenuMapper::toDTO).collect(Collectors.toList());
+    }
 }

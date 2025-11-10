@@ -11,9 +11,10 @@ public class CommentMapper {
             return null;
         }
         CommentDTO dto  = new CommentDTO();
-        dto .setId(comment.getId());
-        dto .setCreated(comment.getCreated());
-        dto .setBodyText(comment.getBodyText());
+        dto.setId(comment.getId());
+        dto.setCreated(comment.getCreated());
+        dto.setBodyText(comment.getBodyText());
+        dto.setUserName(comment.getUser().getUserName());
         if (comment.getRecipe() != null) {
             dto.setRecipeId(comment.getRecipe().getId());
         }

@@ -7,6 +7,7 @@ import com.example.demo.entities.Recipe;
 import com.example.demo.entities.Like;
 import com.example.demo.entities.Menu;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class UserMapper {
@@ -38,5 +39,17 @@ public class UserMapper {
                     .collect(Collectors.toList()));
         }
         return dto;
+    }
+
+    public static User fromDto(UserDTO dto) {
+        User user = new User();
+        user.setUserId(dto.getUserId());
+        user.setUserName(dto.getUserName());
+        user.setRecipes(new ArrayList<>());
+        user.setComments(new ArrayList<>());
+        user.setLikes(new ArrayList<>());
+        user.setMenus(new ArrayList<>());
+
+        return user;
     }
 }

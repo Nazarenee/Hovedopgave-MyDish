@@ -28,6 +28,11 @@ public class IngredientService {
         return ingredients.stream().map(IngredientMapper::toDTO).collect(Collectors.toList());
     }
 
+    public List<IngredientDTO> searchIngredient(String query){
+        List<Ingredient> ingredients = ingredientRepository.findByNameContainingIgnoreCase(query);
+        return ingredients.stream().map(IngredientMapper::toDTO).collect(Collectors.toList());
+    }
+
     public IngredientDTO getIngredient(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
         return IngredientMapper.toDTO(ingredient);
