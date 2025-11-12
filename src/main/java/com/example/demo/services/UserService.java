@@ -36,7 +36,6 @@ public class UserService {
         User user = new User();
         user.setUserName(registerRequest.getUserName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setUserName(registerRequest.getEmail());
 
         User savedUser = userRepository.save(user);
         return UserMapper.toDto(savedUser);
