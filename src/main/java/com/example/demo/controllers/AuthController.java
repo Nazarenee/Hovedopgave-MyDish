@@ -5,6 +5,7 @@ import com.example.demo.DTO.RegisterRequest;
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         UserDTO createdUser = userService.createUser(registerRequest);
         UserDetails userDetails = userDetailsService.loadUserByUsername(createdUser.getUserName());
         String token = jwtUtil.generateToken(userDetails);
