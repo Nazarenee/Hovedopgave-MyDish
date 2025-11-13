@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.DTO.AuthRequest;
 import com.example.demo.DTO.AuthResponse;
 import com.example.demo.DTO.RegisterRequest;
 import com.example.demo.DTO.UserDTO;
@@ -40,14 +39,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody RegisterRequest loginRequest) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword())
         );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUserName());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUserName());
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token, authRequest.getUserName()));
+        return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName()));
     }
 }
