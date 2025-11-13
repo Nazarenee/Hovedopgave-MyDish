@@ -1,6 +1,9 @@
 package com.example.demo.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RegisterRequest {
+    @JsonProperty("username")
     private String userName;
     private String password;
     private String email;
