@@ -1,7 +1,10 @@
 package com.example.demo.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AuthRequest {
-    private String username;
+    @JsonProperty("username")
+    private String userName;
     private String password;
 
 
@@ -9,17 +12,17 @@ public class AuthRequest {
 
     }
 
-    public AuthRequest(String username, String password) {
-        this.username = username;
+    public AuthRequest(String userName, String password) {
+        this.userName = userName;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
