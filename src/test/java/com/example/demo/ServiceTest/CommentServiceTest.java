@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.ServiceTest;
 
 import com.example.demo.DTO.CommentDTO;
 import com.example.demo.entities.Comment;

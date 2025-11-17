@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.ServiceTest;
 
 import com.example.demo.DTO.MenuDTO;
 import com.example.demo.entities.Menu;

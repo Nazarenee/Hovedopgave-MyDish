@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.ControllerTest;
 
 import com.example.demo.DTO.IngredientDTO;
 import com.example.demo.controllers.IngredientController;
