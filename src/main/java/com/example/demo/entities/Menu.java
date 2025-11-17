@@ -13,6 +13,8 @@ public class Menu {
     private Long id;
     @Column(nullable = false, length = 100)
     private String name;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
@@ -66,5 +68,17 @@ public class Menu {
 
     public void removeRecipe(Recipe recipe) {
         this.recipes.remove(recipe);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

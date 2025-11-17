@@ -15,6 +15,12 @@ public class Ingredient {
     private Recipe recipe;
     @Column(nullable = true)
     private Integer averageCookingTime;
+    @Column(nullable = true)
+    private Double amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Unit unit;
 
     public Long getId() {
         return id;
@@ -46,5 +52,21 @@ public class Ingredient {
 
     public void setAverageCookingTime(Integer averageCookingTime) {
         this.averageCookingTime = averageCookingTime;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 }

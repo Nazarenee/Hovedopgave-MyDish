@@ -26,10 +26,10 @@ public class Recipe {
     private Date createdAt;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-    ;
+
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
-    ;
+
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeImage> images = new ArrayList<>();
     private boolean enableComments;

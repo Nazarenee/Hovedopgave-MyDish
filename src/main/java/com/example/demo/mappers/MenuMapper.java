@@ -3,6 +3,7 @@ package com.example.demo.mappers;
 import com.example.demo.DTO.MenuDTO;
 import com.example.demo.entities.Menu;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class MenuMapper {
@@ -10,6 +11,7 @@ public class MenuMapper {
         MenuDTO menuDTO = new MenuDTO();
         menuDTO.setId(menu.getId());
         menuDTO.setName(menu.getName());
+        menuDTO.setDescription(menu.getDescription());
         menuDTO.setAuthorId(menu.getAuthor() != null ? menu.getAuthor().getUserId() : null);
         menuDTO.setRecipes(menu.getRecipes().stream().map(RecipeMapper::toDTO).collect(Collectors.toList()));
         return menuDTO;
@@ -17,9 +19,9 @@ public class MenuMapper {
 
     public static Menu fromDTO(MenuDTO menuDTO){
         Menu menu = new Menu();
-        menu.setName(menu.getName());
-        // SET AUTHOR
-        menu.setRecipes(menuDTO.getRecipes().stream().map(RecipeMapper::fromDTO).collect(Collectors.toList()));
+        menu.setName(menuDTO.getName());
+        menu.setDescription(menuDTO.getDescription());
+        menu.setRecipes(menuDTO.getRecipes() != null ? menuDTO.getRecipes().stream().map(RecipeMapper::fromDTO).collect(Collectors.toList()) : new ArrayList<>());
         return menu;
     }
 }

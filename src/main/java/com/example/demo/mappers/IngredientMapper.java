@@ -8,6 +8,8 @@ public class IngredientMapper {
         IngredientDTO dto = new IngredientDTO();
         dto.setId(ingredient.getId());
         dto.setName(ingredient.getName());
+        dto.setAmount(ingredient.getAmount());
+        dto.setUnit(ingredient.getUnit());
         dto.setRecipeId(ingredient.getRecipe() != null ? ingredient.getRecipe().getId() : null);
         dto.setAverageCookingTime(ingredient.getAverageCookingTime());
         return dto;
@@ -17,6 +19,8 @@ public class IngredientMapper {
         Ingredient ingredient = new Ingredient();
         ingredient.setId(ingredientDTO.getId());
         ingredient.setName(ingredientDTO.getName());
+        ingredient.setAmount(ingredientDTO.getAmount());
+        ingredient.setUnit(ingredientDTO.getUnit());
         ingredient.setAverageCookingTime(ingredient.getAverageCookingTime());
         return ingredient;
     }

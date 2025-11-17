@@ -30,7 +30,7 @@ public class CommentController {
         return commentService.createComment(commentDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteComment(@PathVariable Long id){
         commentService.deleteComment(id);
     }
