@@ -5,12 +5,21 @@ public enum Unit {
     KILOGRAM("kg"),
     OUNCE("oz"),
     POUND("lb"),
+
     MILLILITER("ml"),
     LITER("l"),
     DECILITER("dl"),
     TEASPOON("tsp"),
     TABLESPOON("tbsp"),
-    GALLON("gallon");
+    CUP("cup"),
+    FLUID_OUNCE("fl oz"),
+    PINT("pint"),
+    QUART("quart"),
+    GALLON("gallon"),
+
+    PIECE("piece"),
+    PINCH("pinch"),
+    TO_TASTE("to taste");
 
     private final String selectedUnit;
 
