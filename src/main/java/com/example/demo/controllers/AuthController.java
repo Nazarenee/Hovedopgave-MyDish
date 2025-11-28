@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import com.example.demo.DTO.AuthResponse;
 import com.example.demo.DTO.RegisterRequest;
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entities.User;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.services.UserService;
 import jakarta.validation.Valid;
@@ -22,12 +24,14 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtUtil, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtUtil, UserService userService, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
@@ -36,7 +40,7 @@ public class AuthController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(createdUser.getUserName());
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token, createdUser.getUserName()));
+        return ResponseEntity.ok(new AuthResponse(token, createdUser.getUserName(), createdUser.getUserId()));
     }
 
     @PostMapping("/login")
@@ -48,6 +52,9 @@ public class AuthController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUserName());
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName()));
+        User user = userRepository.findByUserName(loginRequest.getUserName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName(), user.getUserId()));
     }
 }

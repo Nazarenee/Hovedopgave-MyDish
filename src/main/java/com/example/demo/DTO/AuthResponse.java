@@ -2,11 +2,18 @@ package com.example.demo.DTO;
 
 public class AuthResponse {
     private String token;
-    private String username;
+    private String userName;
+    private Long userId;
 
-    public AuthResponse(String token, String username) {
+    public AuthResponse(String token, String userName, Long userId) {
         this.token = token;
-        this.username = username;
+        this.userName = userName;
+        this.userId = userId;
+    }
+
+    public AuthResponse(String token, String userName) {
+        this.token = token;
+        this.userName = userName;
     }
 
     public String getToken() {
@@ -17,11 +24,19 @@ public class AuthResponse {
         this.token = token;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
