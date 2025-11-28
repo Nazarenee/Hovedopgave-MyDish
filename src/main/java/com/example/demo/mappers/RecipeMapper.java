@@ -39,6 +39,9 @@ public class RecipeMapper {
                         IngredientDTO ingDTO = new IngredientDTO();
                         ingDTO.setId(ing.getId());
                         ingDTO.setName(ing.getName());
+                        ingDTO.setAmount(ing.getAmount());
+                        ingDTO.setUnit(ing.getUnit());
+                        ingDTO.setAverageCookingTime(ing.getAverageCookingTime());
                         ingDTO.setRecipeId(recipe.getId());
                         return ingDTO;
                     })
@@ -85,6 +88,9 @@ public class RecipeMapper {
                     .map(ingDTO -> {
                         Ingredient ing = new Ingredient();
                         ing.setName(ingDTO.getName());
+                        ing.setAmount(ingDTO.getAmount());
+                        ing.setUnit(ingDTO.getUnit());
+                        ing.setAverageCookingTime(ingDTO.getAverageCookingTime());
                         ing.setRecipe(recipe);
                         return ing;
                     })
