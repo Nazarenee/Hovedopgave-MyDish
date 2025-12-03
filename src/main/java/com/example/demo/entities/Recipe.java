@@ -32,9 +32,15 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeImage> images = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "recipe_steps", joinColumns = @JoinColumn(name = "recipe_id"))
+    @Column(name = "step")
+    @OrderColumn(name = "step_order")
+    private List<String> stepByStepGuide = new ArrayList<>();
+
     private boolean enableComments;
 
-    public Recipe(Long id, String name, String description, List<Ingredient> ingredients, User author, Date createdAt, List<Comment> comments, List<Like> likes, List<RecipeImage> images, boolean enableComments) {
+    public Recipe(Long id, String name, String description, List<Ingredient> ingredients, User author, Date createdAt, List<Comment> comments, List<Like> likes, List<RecipeImage> images,List<String> stepByStepGuide, boolean enableComments) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,6 +51,7 @@ public class Recipe {
         this.likes = likes;
         this.images = images;
         this.enableComments = enableComments;
+        this.stepByStepGuide = stepByStepGuide;
     }
 
     public Recipe() {
@@ -128,5 +135,13 @@ public class Recipe {
 
     public void setEnableComments(boolean enableComments) {
         this.enableComments = enableComments;
+    }
+
+    public List<String> getStepByStepGuide() {
+        return stepByStepGuide;
+    }
+
+    public void setStepByStepGuide(List<String> stepByStepGuide) {
+        this.stepByStepGuide = stepByStepGuide;
     }
 }
