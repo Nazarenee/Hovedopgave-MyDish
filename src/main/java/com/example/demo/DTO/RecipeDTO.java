@@ -3,6 +3,7 @@ package com.example.demo.DTO;
 
 import com.example.demo.entities.RecipeImage;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,14 +11,15 @@ public class RecipeDTO {
     private Long id;
     private String name;
     private String description;
-    private List<IngredientDTO> ingredients;
+    private List<IngredientDTO> ingredients = new ArrayList<>();
     private Long authorId;
     private String authorName;
     private Date createdAt;
     private int commentCount;
     private int likeCount;
     boolean likedByCurrentUser;
-    private List<RecipeImageDTO> images;
+    private List<RecipeImageDTO> images = new ArrayList<>();
+    private List<String> stepByStepGuide = new ArrayList<>();
     private boolean enableComments;
 
     public Long getId() {
@@ -114,5 +116,13 @@ public class RecipeDTO {
 
     public void setEnableComments(boolean enableComments) {
         this.enableComments = enableComments;
+    }
+
+    public List<String> getStepByStepGuide() {
+        return stepByStepGuide;
+    }
+
+    public void setStepByStepGuide(List<String> stepByStepGuide) {
+        this.stepByStepGuide = stepByStepGuide;
     }
 }
