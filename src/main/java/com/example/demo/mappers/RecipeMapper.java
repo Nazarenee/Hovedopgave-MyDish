@@ -21,7 +21,7 @@ public class RecipeMapper {
         dto.setAuthorName(recipe.getAuthor() != null ? recipe.getAuthor().getUserName() : null);
         dto.setCreatedAt(recipe.getCreatedAt());
         dto.setEnableComments(recipe.isEnableComments());
-        dto.setStepByStepGuide(recipe.getStepByStepGuide());
+        dto.setStepByStepGuide(recipe.getStepByStepGuide() != null ? recipe.getStepByStepGuide() : new ArrayList<>());
 
         dto.setCommentCount(recipe.getComments() != null ? recipe.getComments().size() : 0);
         dto.setLikeCount(recipe.getLikes() != null ? recipe.getLikes().size() : 0);
@@ -70,7 +70,7 @@ public class RecipeMapper {
         recipe.setName(dto.getName());
         recipe.setDescription(dto.getDescription());
         recipe.setEnableComments(dto.isEnableComments());
-        recipe.setStepByStepGuide(dto.getStepByStepGuide());
+        recipe.setStepByStepGuide(dto.getStepByStepGuide() != null ? dto.getStepByStepGuide() : new ArrayList<>());
 
         recipe.setCreatedAt(new Date());
         if (dto.getImages() != null) {
