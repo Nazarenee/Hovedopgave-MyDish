@@ -35,7 +35,7 @@ public class MenuController {
         return menuService.createMenu(menuDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id){
         menuService.deleteMenu(id);
     }
