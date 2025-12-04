@@ -8,12 +8,14 @@ import com.example.demo.repositories.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.services.UserService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,18 +46,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody RegisterRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword())
-        );
+    public ResponseEntity<?> login(@RequestBody RegisterRequest loginRequest) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword())
+            );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUserName());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUserName());
 
-        User user = userRepository.findByUserName(loginRequest.getUserName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByUserName(loginRequest.getUserName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtUtil.generateToken(userDetails, user.getUserId());
+            String token = jwtUtil.generateToken(userDetails, user.getUserId());
 
-        return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName(), user.getUserId()));
+            return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName(), user.getUserId()));
+        } catch (Exception e){
+            return ResponseEntity.status(401).body(Map.of("message", "Wrong username or password"));
+        }
     }
 }
