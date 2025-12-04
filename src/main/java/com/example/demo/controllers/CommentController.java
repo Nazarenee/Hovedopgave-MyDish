@@ -25,6 +25,11 @@ public class CommentController {
         return commentService.getComment(id);
     }
 
+    @GetMapping("/recipe/{recipeId}")
+    public List<CommentDTO> getCommentsByRecipe(@PathVariable Long recipeId) {
+        return commentService.getCommentsByRecipe(recipeId);
+    }
+
     @PostMapping
     public CommentDTO createComment(@RequestBody CommentDTO commentDTO){
         return commentService.createComment(commentDTO);

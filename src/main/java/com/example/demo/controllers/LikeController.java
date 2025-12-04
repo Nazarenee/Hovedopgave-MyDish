@@ -25,6 +25,11 @@ public class LikeController {
         return likeService.getLike(id);
     }
 
+    @DeleteMapping("/recipe/{recipeId}/user/{userId}")
+    public void deleteLikeByRecipeAndUser(@PathVariable Long recipeId, @PathVariable Long userId) {
+        likeService.deleteLikeByRecipeAndUser(recipeId, userId);
+    }
+
     @PostMapping
     public LikeDTO createLike(@RequestBody LikeDTO likeDTO){
         return likeService.createLike(likeDTO);
