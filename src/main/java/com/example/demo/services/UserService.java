@@ -33,7 +33,6 @@ public class UserService {
         this.authenticationManager = authenticationManager;
     }
 
-    // Auth methods
     public UserDTO register(UserDTO userDTO) {
         if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
