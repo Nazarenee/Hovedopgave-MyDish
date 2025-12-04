@@ -127,6 +127,15 @@ public class LikeService {
         return LikeMapper.toDTO(saved);
     }
 
+    public void deleteLikeByCommentAndUser(Long commentId, Long userId) {
+        Like like = likeRepository.findByCommentIdAndUserUserId(commentId, userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Like not found"
+                ));
+        likeRepository.delete(like);
+    }
+
     public void deleteLike(Long id){
         likeRepository.deleteById(id);
     }
