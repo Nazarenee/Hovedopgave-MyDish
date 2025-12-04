@@ -96,12 +96,15 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        boolean usernameChanged = false;
+
         if (userDTO.getUserName() != null && !userDTO.getUserName().trim().isEmpty()) {
             if (!user.getUserName().equals(userDTO.getUserName())) {
                 if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
                 }
                 user.setUserName(userDTO.getUserName());
+                usernameChanged = true;
             }
         }
 
@@ -122,7 +125,13 @@ public class UserService {
         }
 
         User savedUser = userRepository.save(user);
-        return UserMapper.toDto(savedUser);
+        UserDTO response = UserMapper.toDto(savedUser);
+
+        if (usernameChanged) {
+            String newToken = jwtUtil.generateToken(savedUser, savedUser.getUserId());
+            response.setToken(newToken);
+        }
+        return response;
     }
 
     public void deleteUser(Long id) {
