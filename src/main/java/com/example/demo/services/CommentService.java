@@ -31,14 +31,14 @@ public class CommentService {
 
     public List<CommentDTO> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         return comments.stream()
                 .map(comment -> CommentMapper.toDTO(comment, currentUserId))
                 .collect(Collectors.toList());
     }
 
     public CommentDTO getComment(Long id) {
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     public List<CommentDTO> getCommentsByRecipe(Long recipeId) {
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         List<Comment> comments = commentRepository.findByRecipeIdOrderByCreatedDesc(recipeId);
         return comments.stream()
                 .map(comment -> CommentMapper.toDTO(comment, currentUserId))
@@ -86,7 +86,7 @@ public class CommentService {
             );
         }
         Comment saved = commentRepository.save(comment);
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         return CommentMapper.toDTO(saved, currentUserId);
     }
 
