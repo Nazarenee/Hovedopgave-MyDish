@@ -9,6 +9,15 @@ public class MenuDTO {
     private List<RecipeDTO> recipes;
     private List<Long> recipeIds;
     private String description;
+    private String authorName;
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
     public Long getId() {
         return id;
