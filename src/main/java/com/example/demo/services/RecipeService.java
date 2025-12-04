@@ -6,6 +6,7 @@ import com.example.demo.entities.User;
 import com.example.demo.mappers.RecipeMapper;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.security.SecurityConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,24 +25,29 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> getAllRecipes() {
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream()
-                .map(RecipeMapper::toDTO)
+                .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
                 .collect(Collectors.toList());
     }
 
     public List<RecipeDTO> searchRecipe(String query){
-         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
-         return recipes.stream().map(RecipeMapper::toDTO).collect(Collectors.toList());
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
+        return recipes.stream()
+                .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
+                .collect(Collectors.toList());
     }
 
     public RecipeDTO getRecipe(Long id) {
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Recipe not found with id: " + id
                 ));
-        return RecipeMapper.toDTO(recipe);
+        return RecipeMapper.toDTO(recipe, currentUserId);
     }
 
     public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
@@ -61,7 +67,8 @@ public class RecipeService {
         }
 
         Recipe saved = recipeRepository.save(recipe);
-        return RecipeMapper.toDTO(saved);
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        return RecipeMapper.toDTO(saved, currentUserId);
     }
 
     public void deleteRecipe(Long id) {
