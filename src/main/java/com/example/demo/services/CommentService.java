@@ -55,6 +55,13 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public List<CommentDTO> getCommentsByRecipe(Long recipeId) {
+        List<Comment> comments = commentRepository.findByRecipeIdOrderByCreatedDesc(recipeId);
+        return comments.stream()
+                .map(CommentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     public CommentDTO createComment(CommentDTO commentDTO) {
         Comment comment = CommentMapper.fromDTO(commentDTO);
 
