@@ -25,6 +25,11 @@ public class Comment {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+    }
+
     public long getId() {
         return id;
     }
