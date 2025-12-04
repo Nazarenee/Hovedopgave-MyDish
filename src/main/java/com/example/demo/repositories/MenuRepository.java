@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findByNameContainingIgnoreCase(String query);
+    List<Menu> findByAuthor_UserId(Long userId);
 }
