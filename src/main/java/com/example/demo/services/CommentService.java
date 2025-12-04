@@ -8,6 +8,7 @@ import com.example.demo.mappers.CommentMapper;
 import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.security.SecurityConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,24 +31,27 @@ public class CommentService {
 
     public List<CommentDTO> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         return comments.stream()
-                .map(CommentMapper::toDTO)
+                .map(comment -> CommentMapper.toDTO(comment, currentUserId))
                 .collect(Collectors.toList());
     }
 
     public CommentDTO getComment(Long id) {
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Comment not found with id: " + id
                 ));
-        return CommentMapper.toDTO(comment);
+        return CommentMapper.toDTO(comment,currentUserId);
     }
 
     public List<CommentDTO> getCommentsByRecipe(Long recipeId) {
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         List<Comment> comments = commentRepository.findByRecipeIdOrderByCreatedDesc(recipeId);
         return comments.stream()
-                .map(CommentMapper::toDTO)
+                .map(comment -> CommentMapper.toDTO(comment, currentUserId))
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +86,8 @@ public class CommentService {
             );
         }
         Comment saved = commentRepository.save(comment);
-        return CommentMapper.toDTO(saved);
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        return CommentMapper.toDTO(saved, currentUserId);
     }
 
     public void deleteComment(Long id) {
