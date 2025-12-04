@@ -35,6 +35,11 @@ public class MenuService {
         return MenuMapper.toDTO(foundMenu);
     }
 
+    public List<MenuDTO> getMenusByUser(Long userId) {
+        List<Menu> menus = menuRepository.findByAuthor_UserId(userId);
+        return menus.stream().map(MenuMapper::toDTO).collect(Collectors.toList());
+    }
+
     public MenuDTO createMenu(MenuDTO menuDTO) {
         Menu menu = MenuMapper.fromDTO(menuDTO);
         User author = userRepository.findById(menuDTO.getAuthorId()).orElseThrow(() -> new RuntimeException("User not found"));
