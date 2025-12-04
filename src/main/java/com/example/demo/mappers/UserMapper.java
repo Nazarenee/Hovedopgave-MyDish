@@ -15,6 +15,7 @@ public class UserMapper {
         UserDTO dto = new UserDTO();
         dto.setUserId(user.getUserId());
         dto.setUserName(user.getUserName());
+        dto.setProfileImage(user.getProfileImage());
         if (user.getRecipes() != null) {
             dto.setRecipeIds(user.getRecipes().stream()
                     .map(Recipe::getId)

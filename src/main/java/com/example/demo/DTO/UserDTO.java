@@ -9,6 +9,7 @@ public class UserDTO {
     private List<Long> commentIds;
     private List<Long> likeIds;
     private List<Long> menuIds;
+    private String profileImage;
 
     public Long getUserId() {
         return userId;
@@ -56,5 +57,13 @@ public class UserDTO {
 
     public void setMenuIds(List<Long> menuIds) {
         this.menuIds = menuIds;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
