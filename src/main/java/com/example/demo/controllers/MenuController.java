@@ -30,6 +30,11 @@ public class MenuController {
         return menuService.getMenu(id);
     }
 
+    @GetMapping("/user/{userId}")
+    public List<MenuDTO> getMenusByUser(@PathVariable Long userId){
+        return menuService.getMenusByUser(userId);
+    }
+
     @PostMapping
     public MenuDTO createMenu(@RequestBody MenuDTO menuDTO){
         return menuService.createMenu(menuDTO);
