@@ -7,6 +7,7 @@ public class MenuDTO {
     private String name;
     private Long authorId;
     private List<RecipeDTO> recipes;
+    private List<Long> recipeIds;
     private String description;
 
     public Long getId() {
@@ -47,5 +48,13 @@ public class MenuDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Long> getRecipeIds() {
+        return recipeIds;
+    }
+
+    public void setRecipeIds(List<Long> recipeIds) {
+        this.recipeIds = recipeIds;
     }
 }
