@@ -15,6 +15,7 @@ public class CommentMapper {
         dto.setCreated(comment.getCreated());
         dto.setBodyText(comment.getBodyText());
         dto.setUserName(comment.getUser().getUserName());
+        dto.setUserProfileImage(comment.getUser().getProfileImage());
         if (comment.getRecipe() != null) {
             dto.setRecipeId(comment.getRecipe().getId());
         }

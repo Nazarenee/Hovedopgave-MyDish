@@ -12,6 +12,7 @@ public class CommentDTO {
     private int likeCount;
     private boolean likedByCurrentUser;
     private String userName;
+    private String userProfileImage;
 
     public Long getId() {
         return id;
@@ -75,5 +76,13 @@ public class CommentDTO {
 
     public void setLikedByCurrentUser(boolean likedByCurrentUser) {
         this.likedByCurrentUser = likedByCurrentUser;
+    }
+
+    public String getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public void setUserProfileImage(String userProfileImage) {
+        this.userProfileImage = userProfileImage;
     }
 }
