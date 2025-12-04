@@ -15,7 +15,7 @@ public class MenuMapper {
         menuDTO.setDescription(menu.getDescription());
         menuDTO.setAuthorId(menu.getAuthor() != null ? menu.getAuthor().getUserId() : null);
         menuDTO.setAuthorName(menu.getAuthor() != null ? menu.getAuthor().getUserName() : null);
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         if (menu.getRecipes() != null) {
             menuDTO.setRecipes(menu.getRecipes().stream()
                     .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))

@@ -25,7 +25,7 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> getAllRecipes() {
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
@@ -38,7 +38,7 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> searchRecipe(String query){
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
@@ -46,7 +46,7 @@ public class RecipeService {
     }
 
     public RecipeDTO getRecipe(Long id) {
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -72,7 +72,7 @@ public class RecipeService {
         }
 
         Recipe saved = recipeRepository.save(recipe);
-        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        Long currentUserId = SecurityConfig.getCurrentUserId();
         return RecipeMapper.toDTO(saved, currentUserId);
     }
 
