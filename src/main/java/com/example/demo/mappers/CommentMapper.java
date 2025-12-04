@@ -6,7 +6,7 @@ import com.example.demo.entities.Comment;
 import java.util.stream.Collectors;
 
 public class CommentMapper {
-    public static CommentDTO toDTO(Comment comment){
+    public static CommentDTO toDTO(Comment comment, Long currentUserId){
         if (comment == null) {
             return null;
         }
@@ -22,7 +22,15 @@ public class CommentMapper {
             dto.setUserId(comment.getUser().getUserId());
         }
         if (comment.getLikes() != null) {
-            dto.setLikeCount(comment.getLikes().size());
+            dto.setLikeCount(comment.getLikes() != null ? comment.getLikes().size() : 0);
+        }
+
+        if (currentUserId != null && comment.getLikes() != null) {
+            boolean isLiked = comment.getLikes().stream()
+                    .anyMatch(like -> like.getUser().getUserId().equals(currentUserId));
+            dto.setLikedByCurrentUser(isLiked);
+        } else {
+            dto.setLikedByCurrentUser(false);
         }
         return dto;
     }
