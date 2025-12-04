@@ -2,6 +2,7 @@ package com.example.demo.mappers;
 
 import com.example.demo.DTO.MenuDTO;
 import com.example.demo.entities.Menu;
+import com.example.demo.security.SecurityConfig;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -13,8 +14,12 @@ public class MenuMapper {
         menuDTO.setName(menu.getName());
         menuDTO.setDescription(menu.getDescription());
         menuDTO.setAuthorId(menu.getAuthor() != null ? menu.getAuthor().getUserId() : null);
-        menuDTO.setRecipes(menu.getRecipes().stream().map(RecipeMapper::toDTO).collect(Collectors.toList()));
-        return menuDTO;
+        Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
+        if (menu.getRecipes() != null) {
+            menuDTO.setRecipes(menu.getRecipes().stream()
+                    .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
+                    .collect(Collectors.toList()));
+        }        return menuDTO;
     }
 
     public static Menu fromDTO(MenuDTO menuDTO){

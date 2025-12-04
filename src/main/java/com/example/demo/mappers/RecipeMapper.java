@@ -12,7 +12,9 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class RecipeMapper {
-    public static RecipeDTO toDTO(Recipe recipe) {
+
+
+    public static RecipeDTO toDTO(Recipe recipe, Long currentUserId) {
         RecipeDTO dto = new RecipeDTO();
         dto.setId(recipe.getId());
         dto.setName(recipe.getName());
@@ -49,21 +51,17 @@ public class RecipeMapper {
                     .collect(Collectors.toList()));
         }
 
-        return dto;
-    }
-
-    public static RecipeDTO toDTO(Recipe recipe, Long currentUserId) {
-        RecipeDTO dto = toDTO(recipe);
-
-        if (currentUserId != null && recipe.getLikes() != null) {
-            boolean liked = recipe.getLikes().stream()
-                    .anyMatch(like -> like.getUser() != null &&
-                            like.getUser().getUserId().equals(currentUserId));
-            dto.setLikedByCurrentUser(liked);
+        if (currentUserId != null) {
+            boolean isLiked = recipe.getLikes().stream()
+                    .anyMatch(like -> like.getUser().getUserId().equals(currentUserId));
+            dto.setLikedByCurrentUser(isLiked);
+        } else {
+            dto.setLikedByCurrentUser(false);
         }
 
         return dto;
     }
+
 
     public static Recipe fromDTO(RecipeDTO dto) {
         Recipe recipe = new Recipe();

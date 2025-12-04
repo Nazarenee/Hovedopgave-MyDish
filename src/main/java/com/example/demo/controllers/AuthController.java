@@ -38,7 +38,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         UserDTO createdUser = userService.createUser(registerRequest);
         UserDetails userDetails = userDetailsService.loadUserByUsername(createdUser.getUserName());
-        String token = jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails, createdUser.getUserId());
 
         return ResponseEntity.ok(new AuthResponse(token, createdUser.getUserName(), createdUser.getUserId()));
     }
@@ -50,10 +50,11 @@ public class AuthController {
         );
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUserName());
-        String token = jwtUtil.generateToken(userDetails);
 
         User user = userRepository.findByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtUtil.generateToken(userDetails, user.getUserId());
 
         return ResponseEntity.ok(new AuthResponse(token, loginRequest.getUserName(), user.getUserId()));
     }
