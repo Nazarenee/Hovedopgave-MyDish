@@ -40,7 +40,7 @@ public class LikeController {
         return likeService.createLike(likeDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteLike(@PathVariable Long id){
         likeService.deleteLike(id);
     }
