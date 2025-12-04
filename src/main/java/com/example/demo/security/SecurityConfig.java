@@ -69,6 +69,22 @@ public class SecurityConfig {
 
         return http.build();
     }
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/error").permitAll()
+                            .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                            .anyRequest().authenticated()
+                    )
+                    .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     public static Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
