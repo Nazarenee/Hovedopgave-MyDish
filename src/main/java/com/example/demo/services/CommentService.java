@@ -55,7 +55,6 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-
     public CommentDTO createComment(CommentDTO commentDTO) {
         Comment comment = CommentMapper.fromDTO(commentDTO);
 
