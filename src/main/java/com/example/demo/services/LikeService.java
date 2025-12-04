@@ -41,6 +41,15 @@ public class LikeService {
         return LikeMapper.toDTO(like);
     }
 
+    public void deleteLikeByRecipeAndUser(Long recipeId, Long userId) {
+        Like like = likeRepository.findByRecipeIdAndUserUserId(recipeId, userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Like not found"
+                ));
+        likeRepository.delete(like);
+    }
+
     public LikeDTO createLike(LikeDTO likeDTO) {
         Like like = LikeMapper.fromDTO(likeDTO);
 
