@@ -30,6 +30,11 @@ public class LikeController {
         likeService.deleteLikeByRecipeAndUser(recipeId, userId);
     }
 
+    @DeleteMapping("/comment/{commentId}/user/{userId}")
+    public void deleteLikeByCommentAndUser(@PathVariable Long commentId, @PathVariable Long userId) {
+        likeService.deleteLikeByCommentAndUser(commentId, userId);
+    }
+
     @PostMapping
     public LikeDTO createLike(@RequestBody LikeDTO likeDTO){
         return likeService.createLike(likeDTO);

@@ -9,5 +9,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByRecipeIdAndUserUserId(Long recipeId, Long userId);
     boolean existsByUserUserIdAndRecipeId(Long userId, Long recipeId);
     boolean existsByUserUserIdAndCommentId(Long userId, Long commentId);
+    Optional<Like> findByCommentIdAndUserUserId(Long commentId, Long userId);
 
 }
