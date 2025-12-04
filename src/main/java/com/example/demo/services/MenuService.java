@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 
 import com.example.demo.DTO.MenuDTO;
 import com.example.demo.entities.Menu;
+import com.example.demo.entities.Recipe;
 import com.example.demo.entities.User;
 import com.example.demo.mappers.MenuMapper;
 import com.example.demo.repositories.MenuRepository;
+import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,12 @@ import org.springframework.stereotype.Service;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
+    private final RecipeRepository recipeRepository;
 
-    public MenuService(MenuRepository menuRepository, UserRepository userRepository) {
+    public MenuService(MenuRepository menuRepository, UserRepository userRepository, RecipeRepository recipeRepository) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public List<MenuDTO> getAllMenus() {
@@ -35,6 +39,12 @@ public class MenuService {
         Menu menu = MenuMapper.fromDTO(menuDTO);
         User author = userRepository.findById(menuDTO.getAuthorId()).orElseThrow(() -> new RuntimeException("User not found"));
         menu.setAuthor(author);
+
+        if (menuDTO.getRecipeIds() != null && !menuDTO.getRecipeIds().isEmpty()) {
+            List<Recipe> recipes = recipeRepository.findAllById(menuDTO.getRecipeIds());
+            menu.setRecipes(recipes);
+        }
+
         menuRepository.save(menu);
         return MenuMapper.toDTO(menu);
     }
