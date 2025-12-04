@@ -32,6 +32,11 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
+    public List<RecipeDTO> getUserRecipes(Long userId) {
+        List<Recipe> recipes = recipeRepository.findByAuthorUserId(userId);
+        return recipes.stream().map(recipe -> RecipeMapper.toDTO(recipe,userId)).collect(Collectors.toList());
+    }
+
     public List<RecipeDTO> searchRecipe(String query){
         Long currentUserId = SecurityConfig.SecurityUtils.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
@@ -74,4 +79,5 @@ public class RecipeService {
     public void deleteRecipe(Long id) {
         recipeRepository.deleteById(id);
     }
+
 }
