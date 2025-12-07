@@ -18,31 +18,46 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final CurrentUserService currentUserService;
 
-    public MenuService(MenuRepository menuRepository, UserRepository userRepository, RecipeRepository recipeRepository) {
+    public MenuService(MenuRepository menuRepository,
+                       UserRepository userRepository,
+                       RecipeRepository recipeRepository,
+                       CurrentUserService currentUserService) {
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
+        this.currentUserService = currentUserService;
     }
 
     public List<MenuDTO> getAllMenus() {
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Menu> menus = menuRepository.findAll();
-        return menus.stream().map(MenuMapper::toDTO).collect(Collectors.toList());
+        return menus.stream()
+                .map(menu -> MenuMapper.toDTO(menu, currentUserId))
+                .collect(Collectors.toList());
     }
 
     public MenuDTO getMenu(Long id) {
-        Menu foundMenu =  menuRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu not found"));
-        return MenuMapper.toDTO(foundMenu);
+        Long currentUserId = currentUserService.getCurrentUserId();
+        Menu foundMenu = menuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+        return MenuMapper.toDTO(foundMenu, currentUserId);
     }
 
     public List<MenuDTO> getMenusByUser(Long userId) {
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Menu> menus = menuRepository.findByAuthor_UserId(userId);
-        return menus.stream().map(MenuMapper::toDTO).collect(Collectors.toList());
+        return menus.stream()
+                .map(menu -> MenuMapper.toDTO(menu, currentUserId))
+                .collect(Collectors.toList());
     }
 
     public MenuDTO createMenu(MenuDTO menuDTO) {
+        Long currentUserId = currentUserService.getCurrentUserId();
         Menu menu = MenuMapper.fromDTO(menuDTO);
-        User author = userRepository.findById(menuDTO.getAuthorId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User author = userRepository.findById(menuDTO.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         menu.setAuthor(author);
 
         if (menuDTO.getRecipeIds() != null && !menuDTO.getRecipeIds().isEmpty()) {
@@ -51,7 +66,7 @@ public class MenuService {
         }
 
         menuRepository.save(menu);
-        return MenuMapper.toDTO(menu);
+        return MenuMapper.toDTO(menu, currentUserId);
     }
 
     public void deleteMenu(Long id) {
@@ -59,7 +74,10 @@ public class MenuService {
     }
 
     public List<MenuDTO> searchMenu(String query) {
-        List<Menu> menus =  menuRepository.findByNameContainingIgnoreCase(query);
-       return menus.stream().map(MenuMapper::toDTO).collect(Collectors.toList());
+        Long currentUserId = currentUserService.getCurrentUserId();
+        List<Menu> menus = menuRepository.findByNameContainingIgnoreCase(query);
+        return menus.stream()
+                .map(menu -> MenuMapper.toDTO(menu, currentUserId))
+                .collect(Collectors.toList());
     }
 }

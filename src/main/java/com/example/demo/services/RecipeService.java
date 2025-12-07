@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
-    private final CurrentUserService currentUserService;  // ← ADD
+    private final CurrentUserService currentUserService;
 
     public RecipeService(RecipeRepository recipeRepository,
                          UserRepository userRepository,
-                         CurrentUserService currentUserService) {  // ← ADD
+                         CurrentUserService currentUserService) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
-        this.currentUserService = currentUserService;  // ← ADD
+        this.currentUserService = currentUserService;
     }
 
     public List<RecipeDTO> getAllRecipes() {
-        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
@@ -41,7 +41,7 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> searchRecipe(String query){
-        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
@@ -49,7 +49,7 @@ public class RecipeService {
     }
 
     public RecipeDTO getRecipe(Long id) {
-        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
+        Long currentUserId = currentUserService.getCurrentUserId();
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -75,12 +75,12 @@ public class RecipeService {
         }
 
         Recipe saved = recipeRepository.save(recipe);
-        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
+        Long currentUserId = currentUserService.getCurrentUserId();
         return RecipeMapper.toDTO(saved, currentUserId);
     }
 
     public RecipeDTO saveRecipeToMyCollection(Long recipeId) {
-        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
+        Long currentUserId = currentUserService.getCurrentUserId();
 
         if (currentUserId == null) {
             throw new ResponseStatusException(
