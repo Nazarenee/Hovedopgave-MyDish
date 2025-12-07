@@ -8,6 +8,7 @@ import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CommentService;
+import com.example.demo.services.CurrentUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ class CommentServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CurrentUserService currentUserService;
 
     @InjectMocks
     private CommentService commentService;
@@ -68,6 +72,7 @@ class CommentServiceTest {
         commentDTO.setUserId(1L);
         commentDTO.setRecipeId(1L);
         commentDTO.setUserName("testUser");
+        when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test

@@ -3,19 +3,19 @@ package com.example.demo.mappers;
 import com.example.demo.DTO.MenuDTO;
 import com.example.demo.entities.Menu;
 import com.example.demo.security.SecurityConfig;
+import com.example.demo.services.CurrentUserService;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class MenuMapper {
-    public static MenuDTO toDTO(Menu menu){
+    public static MenuDTO toDTO(Menu menu, Long currentUserId){
         MenuDTO menuDTO = new MenuDTO();
         menuDTO.setId(menu.getId());
         menuDTO.setName(menu.getName());
         menuDTO.setDescription(menu.getDescription());
         menuDTO.setAuthorId(menu.getAuthor() != null ? menu.getAuthor().getUserId() : null);
         menuDTO.setAuthorName(menu.getAuthor() != null ? menu.getAuthor().getUserName() : null);
-        Long currentUserId = SecurityConfig.getCurrentUserId();
         if (menu.getRecipes() != null) {
             menuDTO.setRecipes(menu.getRecipes().stream()
                     .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))

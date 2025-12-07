@@ -5,6 +5,7 @@ import com.example.demo.entities.Recipe;
 import com.example.demo.entities.User;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.CurrentUserService;
 import com.example.demo.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class RecipeServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CurrentUserService currentUserService;
 
     @InjectMocks
     private RecipeService recipeService;
@@ -59,6 +63,7 @@ class RecipeServiceTest {
         recipeDTO.setLikeCount(0);
         recipeDTO.setLikedByCurrentUser(false);
         recipeDTO.setEnableComments(true);
+        when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test

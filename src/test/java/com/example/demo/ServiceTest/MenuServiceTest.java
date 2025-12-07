@@ -5,6 +5,7 @@ import com.example.demo.entities.Menu;
 import com.example.demo.entities.User;
 import com.example.demo.repositories.MenuRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.CurrentUserService;
 import com.example.demo.services.MenuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
+    @Mock
+    private CurrentUserService currentUserService;
+
     private Menu menu;
     private MenuDTO menuDTO;
     private User user;
@@ -54,6 +58,7 @@ class MenuServiceTest {
         menuDTO.setName("Test Menu");
         menuDTO.setDescription("Test Description");
         menuDTO.setAuthorId(1L);
+        when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test
