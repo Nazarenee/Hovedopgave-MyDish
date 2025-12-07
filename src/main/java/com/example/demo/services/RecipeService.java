@@ -22,27 +22,26 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;  // ← ADD
 
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository) {
+    public RecipeService(RecipeRepository recipeRepository,
+                         UserRepository userRepository,
+                         CurrentUserService currentUserService) {  // ← ADD
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
+        this.currentUserService = currentUserService;  // ← ADD
     }
 
     public List<RecipeDTO> getAllRecipes() {
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeDTO> getUserRecipes(Long userId) {
-        List<Recipe> recipes = recipeRepository.findByAuthorUserId(userId);
-        return recipes.stream().map(recipe -> RecipeMapper.toDTO(recipe,userId)).collect(Collectors.toList());
-    }
-
     public List<RecipeDTO> searchRecipe(String query){
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
         List<Recipe> recipes = recipeRepository.findByNameContainingIgnoreCase(query);
         return recipes.stream()
                 .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
@@ -50,7 +49,7 @@ public class RecipeService {
     }
 
     public RecipeDTO getRecipe(Long id) {
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -58,9 +57,6 @@ public class RecipeService {
                 ));
         return RecipeMapper.toDTO(recipe, currentUserId);
     }
-
-
-
 
     public RecipeDTO createRecipe(RecipeDTO recipeDTO) {
         Recipe recipe = RecipeMapper.fromDTO(recipeDTO);
@@ -79,54 +75,39 @@ public class RecipeService {
         }
 
         Recipe saved = recipeRepository.save(recipe);
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
         return RecipeMapper.toDTO(saved, currentUserId);
     }
 
-    public void deleteRecipe(Long id) {
-        recipeRepository.deleteById(id);
-    }
-
     public RecipeDTO saveRecipeToMyCollection(Long recipeId) {
-        System.out.println("=== SAVE RECIPE SERVICE DEBUG ===");
-        System.out.println("Recipe ID: " + recipeId);
-
-        Long currentUserId = SecurityConfig.getCurrentUserId();
-        System.out.println("Current User ID: " + currentUserId);
+        Long currentUserId = currentUserService.getCurrentUserId();  // ← CHANGE
 
         if (currentUserId == null) {
-            System.out.println("ERROR: Current user ID is null!");
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
                     "User must be logged in to save recipes"
             );
         }
 
-        System.out.println("Finding original recipe...");
         Recipe originalRecipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Recipe not found with id: " + recipeId
                 ));
-        System.out.println("Original recipe found: " + originalRecipe.getName());
 
-        System.out.println("Finding current user...");
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User not found with id: " + currentUserId
                 ));
-        System.out.println("Current user found: " + currentUser.getUserName());
 
         if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
-            System.out.println("ERROR: User trying to save their own recipe!");
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "You cannot save your own recipe"
             );
         }
 
-        System.out.println("Creating new recipe copy...");
         Recipe newRecipe = new Recipe();
         newRecipe.setName(originalRecipe.getName());
         newRecipe.setDescription(originalRecipe.getDescription());
@@ -134,7 +115,6 @@ public class RecipeService {
         newRecipe.setAuthor(currentUser);
         newRecipe.setCreatedAt(new Date());
 
-        System.out.println("Copying " + originalRecipe.getIngredients().size() + " ingredients...");
         List<Ingredient> copiedIngredients = new ArrayList<>();
         for (Ingredient ing : originalRecipe.getIngredients()) {
             Ingredient newIng = new Ingredient();
@@ -147,7 +127,6 @@ public class RecipeService {
         }
         newRecipe.setIngredients(copiedIngredients);
 
-        System.out.println("Copying " + originalRecipe.getImages().size() + " images...");
         List<RecipeImage> copiedImages = new ArrayList<>();
         for (RecipeImage img : originalRecipe.getImages()) {
             RecipeImage newImg = new RecipeImage();
@@ -158,14 +137,22 @@ public class RecipeService {
         newRecipe.setImages(copiedImages);
 
         if (originalRecipe.getStepByStepGuide() != null) {
-            System.out.println("Copying step-by-step guide...");
             newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
         }
 
-        System.out.println("Saving new recipe to database...");
         Recipe savedRecipe = recipeRepository.save(newRecipe);
-        System.out.println("Recipe saved successfully with ID: " + savedRecipe.getId());
-
         return RecipeMapper.toDTO(savedRecipe, currentUserId);
+    }
+
+    public List<RecipeDTO> getUserRecipes(Long userId) {
+        Long currentUserId = currentUserService.getCurrentUserId();
+        List<Recipe> recipes = recipeRepository.findByAuthorUserId(userId);
+        return recipes.stream()
+                .map(recipe -> RecipeMapper.toDTO(recipe, currentUserId))
+                .collect(Collectors.toList());
+    }
+
+    public void deleteRecipe(Long id) {
+        recipeRepository.deleteById(id);
     }
 }
