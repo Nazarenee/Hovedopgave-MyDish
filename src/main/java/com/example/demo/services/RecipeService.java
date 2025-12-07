@@ -88,26 +88,39 @@ public class RecipeService {
     }
 
     public RecipeDTO saveRecipeToMyCollection(Long recipeId) {
+        System.out.println("=== SAVE RECIPE SERVICE DEBUG ===");
+        System.out.println("Recipe ID: " + recipeId);
+
         Long currentUserId = SecurityConfig.getCurrentUserId();
+        System.out.println("Current User ID: " + currentUserId);
 
         if (currentUserId == null) {
+            System.out.println("ERROR: Current user ID is null!");
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
                     "User must be logged in to save recipes"
             );
         }
 
+        System.out.println("Finding original recipe...");
         Recipe originalRecipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Recipe not found with id: " + recipeId
                 ));
+        System.out.println("Original recipe found: " + originalRecipe.getName());
+
+        System.out.println("Finding current user...");
 
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User not found with id: " + currentUserId
                 ));
+        System.out.println("Current user found: " + currentUser.getUserName());
+
+        if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
+            System.out.println("ERROR: User trying to save their own recipe!");
 
         if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
             throw new ResponseStatusException(
@@ -116,6 +129,7 @@ public class RecipeService {
             );
         }
 
+        System.out.println("Creating new recipe copy...");
         Recipe newRecipe = new Recipe();
         newRecipe.setName(originalRecipe.getName());
         newRecipe.setDescription(originalRecipe.getDescription());
@@ -123,6 +137,7 @@ public class RecipeService {
         newRecipe.setAuthor(currentUser);
         newRecipe.setCreatedAt(new Date());
 
+        System.out.println("Copying " + originalRecipe.getIngredients().size() + " ingredients...");
         List<Ingredient> copiedIngredients = new ArrayList<>();
         for (Ingredient ing : originalRecipe.getIngredients()) {
             Ingredient newIng = new Ingredient();
@@ -135,6 +150,7 @@ public class RecipeService {
         }
         newRecipe.setIngredients(copiedIngredients);
 
+        System.out.println("Copying " + originalRecipe.getImages().size() + " images...");
         List<RecipeImage> copiedImages = new ArrayList<>();
         for (RecipeImage img : originalRecipe.getImages()) {
             RecipeImage newImg = new RecipeImage();
@@ -145,6 +161,13 @@ public class RecipeService {
         newRecipe.setImages(copiedImages);
 
         if (originalRecipe.getStepByStepGuide() != null) {
+            System.out.println("Copying step-by-step guide...");
+            newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
+        }
+
+        System.out.println("Saving new recipe to database...");
+        Recipe savedRecipe = recipeRepository.save(newRecipe);
+        System.out.println("Recipe saved successfully with ID: " + savedRecipe.getId());
             newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
         }
 
