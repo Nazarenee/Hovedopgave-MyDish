@@ -54,6 +54,19 @@ public class Recipe {
         this.stepByStepGuide = stepByStepGuide;
     }
 
+    public Recipe(Recipe recipe){
+        this.id = recipe.getId();
+        this.name = recipe.getName();
+        this.description = recipe.getDescription();
+        this.ingredients = recipe.getIngredients();
+        this.createdAt = recipe.getCreatedAt();
+        this.comments = recipe.getComments();
+        this.likes = recipe.getLikes();
+        this.images = recipe.getImages();
+        this.enableComments = recipe.isEnableComments();
+        this.stepByStepGuide = recipe.getStepByStepGuide();
+    }
+
     public Recipe() {
     }
 

@@ -38,6 +38,11 @@ public class RecipeController {
         return recipeService.getRecipe(id);
     }
 
+    @PostMapping("/{id}/save")
+    public RecipeDTO saveRecipeToMyCollection(@PathVariable Long id) {
+        return recipeService.saveRecipeToMyCollection(id);
+    }
+
     @PostMapping
     public RecipeDTO createRecipe(@RequestBody RecipeDTO recipeDTO) {
         return recipeService.createRecipe(recipeDTO);
