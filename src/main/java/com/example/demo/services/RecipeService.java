@@ -111,12 +111,17 @@ public class RecipeService {
         System.out.println("Original recipe found: " + originalRecipe.getName());
 
         System.out.println("Finding current user...");
+
+        System.out.println("Finding current user...");
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User not found with id: " + currentUserId
                 ));
         System.out.println("Current user found: " + currentUser.getUserName());
+
+        if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
+            System.out.println("ERROR: User trying to save their own recipe!");
 
         if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
             System.out.println("ERROR: User trying to save their own recipe!");
@@ -159,6 +164,12 @@ public class RecipeService {
 
         if (originalRecipe.getStepByStepGuide() != null) {
             System.out.println("Copying step-by-step guide...");
+            newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
+        }
+
+        System.out.println("Saving new recipe to database...");
+        Recipe savedRecipe = recipeRepository.save(newRecipe);
+        System.out.println("Recipe saved successfully with ID: " + savedRecipe.getId());
             newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
         }
 
