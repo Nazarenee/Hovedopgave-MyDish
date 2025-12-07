@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+import static org.mockito.Mockito.lenient;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ class CommentServiceTest {
         commentDTO.setUserId(1L);
         commentDTO.setRecipeId(1L);
         commentDTO.setUserName("testUser");
-        when(currentUserService.getCurrentUserId()).thenReturn(1L);
+        lenient().when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test
