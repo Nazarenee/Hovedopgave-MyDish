@@ -111,7 +111,6 @@ public class RecipeService {
         System.out.println("Original recipe found: " + originalRecipe.getName());
 
         System.out.println("Finding current user...");
-
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -121,8 +120,6 @@ public class RecipeService {
 
         if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
             System.out.println("ERROR: User trying to save their own recipe!");
-
-        if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "You cannot save your own recipe"
@@ -168,10 +165,6 @@ public class RecipeService {
         System.out.println("Saving new recipe to database...");
         Recipe savedRecipe = recipeRepository.save(newRecipe);
         System.out.println("Recipe saved successfully with ID: " + savedRecipe.getId());
-            newRecipe.setStepByStepGuide(new ArrayList<>(originalRecipe.getStepByStepGuide()));
-        }
-
-        Recipe savedRecipe = recipeRepository.save(newRecipe);
 
         return RecipeMapper.toDTO(savedRecipe, currentUserId);
     }
