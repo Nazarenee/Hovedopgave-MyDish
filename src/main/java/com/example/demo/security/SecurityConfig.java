@@ -69,12 +69,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    public static Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Long) {
-            return (Long) authentication.getPrincipal();
-        }
-        return null;
-    }
 }

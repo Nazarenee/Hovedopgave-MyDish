@@ -8,7 +8,6 @@ import com.example.demo.mappers.CommentMapper;
 import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
-import com.example.demo.security.SecurityConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,34 +20,38 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
-    public CommentService(CommentRepository commentRepository, RecipeRepository recipeRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository,
+                          RecipeRepository recipeRepository,
+                          UserRepository userRepository,
+                          CurrentUserService currentUserService) {
         this.commentRepository = commentRepository;
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
     }
 
-
     public List<CommentDTO> getAllComments() {
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Comment> comments = commentRepository.findAll();
-        Long currentUserId = SecurityConfig.getCurrentUserId();
         return comments.stream()
                 .map(comment -> CommentMapper.toDTO(comment, currentUserId))
                 .collect(Collectors.toList());
     }
 
     public CommentDTO getComment(Long id) {
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Comment not found with id: " + id
                 ));
-        return CommentMapper.toDTO(comment,currentUserId);
+        return CommentMapper.toDTO(comment, currentUserId);
     }
 
     public List<CommentDTO> getCommentsByRecipe(Long recipeId) {
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();
         List<Comment> comments = commentRepository.findByRecipeIdOrderByCreatedDesc(recipeId);
         return comments.stream()
                 .map(comment -> CommentMapper.toDTO(comment, currentUserId))
@@ -85,8 +88,9 @@ public class CommentService {
                     "User ID is required"
             );
         }
+
         Comment saved = commentRepository.save(comment);
-        Long currentUserId = SecurityConfig.getCurrentUserId();
+        Long currentUserId = currentUserService.getCurrentUserId();
         return CommentMapper.toDTO(saved, currentUserId);
     }
 

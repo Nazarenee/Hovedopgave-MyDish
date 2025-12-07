@@ -37,6 +37,9 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
+    @Mock
+    private CurrentUserService currentUserService;
+
     private Menu menu;
     private MenuDTO menuDTO;
     private User user;

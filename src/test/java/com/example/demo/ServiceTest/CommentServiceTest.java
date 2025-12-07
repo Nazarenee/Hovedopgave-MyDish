@@ -74,6 +74,7 @@ class CommentServiceTest {
         commentDTO.setUserId(1L);
         commentDTO.setRecipeId(1L);
         commentDTO.setUserName("testUser");
+        when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test
