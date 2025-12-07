@@ -8,6 +8,7 @@ import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CommentService;
+import com.example.demo.services.CurrentUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,9 @@ class CommentServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private CurrentUserService currentUserService;
+
     @InjectMocks
     private CommentService commentService;
 
@@ -61,6 +65,8 @@ class CommentServiceTest {
         comment.setUser(user);
         comment.setRecipe(recipe);
         comment.setCreated(LocalDateTime.now());
+
+        when(currentUserService.getCurrentUserId()).thenReturn(1L);
 
         commentDTO = new CommentDTO();
         commentDTO.setId(1L);
