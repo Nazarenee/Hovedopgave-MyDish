@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+import static org.mockito.Mockito.lenient;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,7 @@ class RecipeServiceTest {
         recipeDTO.setLikeCount(0);
         recipeDTO.setLikedByCurrentUser(false);
         recipeDTO.setEnableComments(true);
-        when(currentUserService.getCurrentUserId()).thenReturn(1L);
+        lenient().when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test

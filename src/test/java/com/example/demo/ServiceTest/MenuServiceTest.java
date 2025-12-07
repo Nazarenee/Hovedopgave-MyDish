@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.lenient;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +32,11 @@ class MenuServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
-    private MenuService menuService;
-
     @Mock
     private CurrentUserService currentUserService;
 
+    @InjectMocks
+    private MenuService menuService;
     private Menu menu;
     private MenuDTO menuDTO;
     private User user;
@@ -58,7 +58,7 @@ class MenuServiceTest {
         menuDTO.setName("Test Menu");
         menuDTO.setDescription("Test Description");
         menuDTO.setAuthorId(1L);
-        when(currentUserService.getCurrentUserId()).thenReturn(1L);
+        lenient().when(currentUserService.getCurrentUserId()).thenReturn(1L);
     }
 
     @Test
