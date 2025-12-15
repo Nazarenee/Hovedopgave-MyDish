@@ -11,6 +11,8 @@ import com.example.demo.mappers.MenuMapper;
 import com.example.demo.repositories.MenuRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.exceptions.MenuNotFoundException;
+import com.example.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,7 +43,7 @@ public class MenuService {
     public MenuDTO getMenu(Long id) {
         Long currentUserId = currentUserService.getCurrentUserId();
         Menu foundMenu = menuRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Menu not found"));
+                .orElseThrow(() -> new MenuNotFoundException(id));
         return MenuMapper.toDTO(foundMenu, currentUserId);
     }
 
@@ -57,7 +59,7 @@ public class MenuService {
         Long currentUserId = currentUserService.getCurrentUserId();
         Menu menu = MenuMapper.fromDTO(menuDTO);
         User author = userRepository.findById(menuDTO.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(menuDTO.getAuthorId()));
         menu.setAuthor(author);
 
         if (menuDTO.getRecipeIds() != null && !menuDTO.getRecipeIds().isEmpty()) {

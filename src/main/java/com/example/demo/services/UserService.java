@@ -5,6 +5,10 @@ import com.example.demo.entities.User;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.security.JwtUtil;
+import com.example.exceptions.BadRequestException;
+import com.example.exceptions.ConflictException;
+import com.example.exceptions.UnauthorizedException;
+import com.example.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +39,7 @@ public class UserService {
 
     public UserDTO register(UserDTO userDTO) {
         if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+            throw new ConflictException("Username already exists");
         }
 
         User user = new User();
@@ -59,7 +63,7 @@ public class UserService {
         );
 
         User user = userRepository.findByUserName(userDTO.getUserName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
 
         String token = jwtUtil.generateToken(user, user.getUserId());
 
@@ -75,13 +79,13 @@ public class UserService {
 
     public UserDTO getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
         return UserMapper.toDto(user);
     }
 
     public UserDTO createUser(UserDTO userDTO) {
         if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+            throw new UserNotFoundException(userDTO.getUserId());
         }
 
         User user = new User();
@@ -94,14 +98,14 @@ public class UserService {
 
     public UserDTO updateUser(Long id, UserDTO userDTO, User currentUser) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new UserNotFoundException(userDTO.getUserId()));
 
         boolean usernameChanged = false;
 
         if (userDTO.getUserName() != null && !userDTO.getUserName().trim().isEmpty()) {
             if (!user.getUserName().equals(userDTO.getUserName())) {
                 if (userRepository.findByUserName(userDTO.getUserName()).isPresent()) {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
+                    throw new ConflictException("Username already exists");
                 }
                 user.setUserName(userDTO.getUserName());
                 usernameChanged = true;
@@ -114,11 +118,11 @@ public class UserService {
 
         if (userDTO.getNewPassword() != null && !userDTO.getNewPassword().trim().isEmpty()) {
             if (userDTO.getCurrentPassword() == null || userDTO.getCurrentPassword().trim().isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is required");
+                throw new BadRequestException("Current password is required");
             }
 
             if (!passwordEncoder.matches(userDTO.getCurrentPassword(), user.getPassword())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
+                throw new BadRequestException("Current password is incorrect");
             }
 
             user.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));

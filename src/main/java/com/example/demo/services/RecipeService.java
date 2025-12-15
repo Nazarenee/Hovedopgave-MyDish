@@ -9,6 +9,10 @@ import com.example.demo.mappers.RecipeMapper;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.security.SecurityConfig;
+import com.example.exceptions.BadRequestException;
+import com.example.exceptions.RecipeNotFoundException;
+import com.example.exceptions.UnauthorizedException;
+import com.example.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,10 +55,7 @@ public class RecipeService {
     public RecipeDTO getRecipe(Long id) {
         Long currentUserId = currentUserService.getCurrentUserId();
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Recipe not found with id: " + id
-                ));
+                .orElseThrow(() -> new RecipeNotFoundException(id));
         return RecipeMapper.toDTO(recipe, currentUserId);
     }
 
@@ -62,16 +63,10 @@ public class RecipeService {
         Recipe recipe = RecipeMapper.fromDTO(recipeDTO);
         if (recipeDTO.getAuthorId() != null) {
             User author = userRepository.findById(recipeDTO.getAuthorId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "User not found with id: " + recipeDTO.getAuthorId()
-                    ));
+                    .orElseThrow(() -> new UserNotFoundException(recipeDTO.getAuthorId()));
             recipe.setAuthor(author);
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Author ID is required"
-            );
+            throw new BadRequestException("Author ID is required");
         }
 
         Recipe saved = recipeRepository.save(recipe);
@@ -83,23 +78,14 @@ public class RecipeService {
         Long currentUserId = currentUserService.getCurrentUserId();
 
         if (currentUserId == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "User must be logged in to save recipes"
-            );
+            throw new UnauthorizedException("User must be logged in to save recipes");
         }
 
         Recipe originalRecipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Recipe not found with id: " + recipeId
-                ));
+                .orElseThrow(() -> new RecipeNotFoundException(recipeId));
 
         User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User not found with id: " + currentUserId
-                ));
+                .orElseThrow(() -> new UserNotFoundException(currentUserId));
 
         if (originalRecipe.getAuthor().getUserId().equals(currentUserId)) {
             throw new ResponseStatusException(
