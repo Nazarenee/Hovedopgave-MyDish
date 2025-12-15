@@ -9,6 +9,10 @@ import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CommentService;
 import com.example.demo.services.CurrentUserService;
+import com.example.exceptions.BadRequestException;
+import com.example.exceptions.CommentNotFoundException;
+import com.example.exceptions.RecipeNotFoundException;
+import com.example.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -122,8 +126,8 @@ class CommentServiceTest {
         when(commentRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        CommentNotFoundException exception = assertThrows(
+                CommentNotFoundException.class,
                 () -> commentService.getComment(invalidId)
         );
 
@@ -155,8 +159,8 @@ class CommentServiceTest {
         commentDTO.setRecipeId(null);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> commentService.createComment(commentDTO)
         );
 
@@ -173,8 +177,8 @@ class CommentServiceTest {
         when(recipeRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        RecipeNotFoundException exception = assertThrows(
+                RecipeNotFoundException.class,
                 () -> commentService.createComment(commentDTO)
         );
 
@@ -191,8 +195,8 @@ class CommentServiceTest {
         when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> commentService.createComment(commentDTO)
         );
 
@@ -210,8 +214,8 @@ class CommentServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> commentService.createComment(commentDTO)
         );
 
@@ -243,8 +247,8 @@ class CommentServiceTest {
         when(commentRepository.existsById(invalidId)).thenReturn(false);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        CommentNotFoundException exception = assertThrows(
+                CommentNotFoundException.class,
                 () -> commentService.deleteComment(invalidId)
         );
 

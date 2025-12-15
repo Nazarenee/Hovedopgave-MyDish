@@ -6,6 +6,8 @@ import com.example.demo.entities.Recipe;
 import com.example.demo.mappers.IngredientMapper;
 import com.example.demo.repositories.IngredientRepository;
 import com.example.demo.repositories.RecipeRepository;
+import com.example.exceptions.IngredientNotFoundException;
+import com.example.exceptions.RecipeNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,14 +36,15 @@ public class IngredientService {
     }
 
     public IngredientDTO getIngredient(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new IngredientNotFoundException(id));
         return IngredientMapper.toDTO(ingredient);
     }
 
     public IngredientDTO createIngredient(IngredientDTO ingredientDTO) {
         Ingredient ingredient = IngredientMapper.fromDTO(ingredientDTO);
-        Recipe foundRecipe = recipeRepository.findById(ingredientDTO.getRecipeId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Recipe not found with id: " + ingredientDTO.getRecipeId()));
+        Recipe foundRecipe = recipeRepository.findById(ingredientDTO.getRecipeId()).orElseThrow(() -> new RecipeNotFoundException(ingredientDTO.getRecipeId()));
+
         ingredient.setRecipe(foundRecipe);
         ingredientRepository.save(ingredient);
         return IngredientMapper.toDTO(ingredient);

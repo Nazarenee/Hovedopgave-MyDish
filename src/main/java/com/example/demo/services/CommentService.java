@@ -8,6 +8,10 @@ import com.example.demo.mappers.CommentMapper;
 import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.exceptions.BadRequestException;
+import com.example.exceptions.CommentNotFoundException;
+import com.example.exceptions.RecipeNotFoundException;
+import com.example.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,10 +47,7 @@ public class CommentService {
     public CommentDTO getComment(Long id) {
         Long currentUserId = currentUserService.getCurrentUserId();
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Comment not found with id: " + id
-                ));
+                .orElseThrow(() -> new CommentNotFoundException(id));
         return CommentMapper.toDTO(comment, currentUserId);
     }
 
@@ -63,30 +64,18 @@ public class CommentService {
 
         if (commentDTO.getRecipeId() != null) {
             Recipe recipe = recipeRepository.findById(commentDTO.getRecipeId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Recipe not found with id: " + commentDTO.getRecipeId()
-                    ));
+                    .orElseThrow(() -> new RecipeNotFoundException(commentDTO.getRecipeId()));
             comment.setRecipe(recipe);
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Recipe ID is required"
-            );
+            throw new BadRequestException("Recipe ID is required");
         }
 
         if (commentDTO.getUserId() != null) {
             User user = userRepository.findById(commentDTO.getUserId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "User not found with id: " + commentDTO.getUserId()
-                    ));
+                    .orElseThrow(() -> new UserNotFoundException(commentDTO.getUserId()));
             comment.setUser(user);
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "User ID is required"
-            );
+            throw new BadRequestException("User ID is required");
         }
 
         Comment saved = commentRepository.save(comment);
@@ -96,10 +85,7 @@ public class CommentService {
 
     public void deleteComment(Long id) {
         if (!commentRepository.existsById(id)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Comment not found with id: " + id
-            );
+            throw new CommentNotFoundException(id);
         }
         commentRepository.deleteById(id);
     }

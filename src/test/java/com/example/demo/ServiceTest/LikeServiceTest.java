@@ -10,13 +10,13 @@ import com.example.demo.repositories.LikeRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.LikeService;
+import com.example.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,8 +117,8 @@ class LikeServiceTest {
         when(likeRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        LikeNotFoundException exception = assertThrows(
+                LikeNotFoundException.class,
                 () -> likeService.getLike(invalidId)
         );
 
@@ -176,8 +176,8 @@ class LikeServiceTest {
         likeDTO.setUserId(null);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -193,8 +193,8 @@ class LikeServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -211,8 +211,8 @@ class LikeServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -228,8 +228,8 @@ class LikeServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -244,8 +244,8 @@ class LikeServiceTest {
         when(likeRepository.existsByUserUserIdAndRecipeId(1L, 1L)).thenReturn(true);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        LikeAlreadyExistsException exception = assertThrows(
+                LikeAlreadyExistsException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -263,8 +263,8 @@ class LikeServiceTest {
         when(likeRepository.existsByUserUserIdAndCommentId(1L, 1L)).thenReturn(true);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        LikeAlreadyExistsException exception = assertThrows(
+                LikeAlreadyExistsException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -282,8 +282,8 @@ class LikeServiceTest {
         when(recipeRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        RecipeNotFoundException exception = assertThrows(
+                RecipeNotFoundException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -302,8 +302,8 @@ class LikeServiceTest {
         when(commentRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        CommentNotFoundException exception = assertThrows(
+                CommentNotFoundException.class,
                 () -> likeService.createLike(likeDTO)
         );
 
@@ -323,5 +323,73 @@ class LikeServiceTest {
 
         // Assert
         verify(likeRepository, times(1)).deleteById(likeId);
+    }
+
+    @Test
+    void deleteLikeByRecipeAndUser_WithValidIds_ShouldDeleteLike() {
+        // Arrange
+        Long recipeId = 1L;
+        Long userId = 1L;
+        when(likeRepository.findByRecipeIdAndUserUserId(recipeId, userId)).thenReturn(Optional.of(like));
+        doNothing().when(likeRepository).delete(like);
+
+        // Act
+        likeService.deleteLikeByRecipeAndUser(recipeId, userId);
+
+        // Assert
+        verify(likeRepository, times(1)).findByRecipeIdAndUserUserId(recipeId, userId);
+        verify(likeRepository, times(1)).delete(like);
+    }
+
+    @Test
+    void deleteLikeByRecipeAndUser_WithInvalidIds_ShouldThrowException() {
+        // Arrange
+        Long recipeId = 999L;
+        Long userId = 999L;
+        when(likeRepository.findByRecipeIdAndUserUserId(recipeId, userId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        LikeNotFoundException exception = assertThrows(
+                LikeNotFoundException.class,
+                () -> likeService.deleteLikeByRecipeAndUser(recipeId, userId)
+        );
+
+        assertTrue(exception.getMessage().contains("Like not found"));
+        verify(likeRepository, times(1)).findByRecipeIdAndUserUserId(recipeId, userId);
+        verify(likeRepository, never()).delete(any(Like.class));
+    }
+
+    @Test
+    void deleteLikeByCommentAndUser_WithValidIds_ShouldDeleteLike() {
+        // Arrange
+        Long commentId = 1L;
+        Long userId = 1L;
+        when(likeRepository.findByCommentIdAndUserUserId(commentId, userId)).thenReturn(Optional.of(like));
+        doNothing().when(likeRepository).delete(like);
+
+        // Act
+        likeService.deleteLikeByCommentAndUser(commentId, userId);
+
+        // Assert
+        verify(likeRepository, times(1)).findByCommentIdAndUserUserId(commentId, userId);
+        verify(likeRepository, times(1)).delete(like);
+    }
+
+    @Test
+    void deleteLikeByCommentAndUser_WithInvalidIds_ShouldThrowException() {
+        // Arrange
+        Long commentId = 999L;
+        Long userId = 999L;
+        when(likeRepository.findByCommentIdAndUserUserId(commentId, userId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        LikeNotFoundException exception = assertThrows(
+                LikeNotFoundException.class,
+                () -> likeService.deleteLikeByCommentAndUser(commentId, userId)
+        );
+
+        assertTrue(exception.getMessage().contains("Like not found"));
+        verify(likeRepository, times(1)).findByCommentIdAndUserUserId(commentId, userId);
+        verify(likeRepository, never()).delete(any(Like.class));
     }
 }

@@ -7,6 +7,8 @@ import com.example.demo.repositories.MenuRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CurrentUserService;
 import com.example.demo.services.MenuService;
+import com.example.exceptions.MenuNotFoundException;
+import com.example.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -123,8 +125,8 @@ class MenuServiceTest {
         when(menuRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        MenuNotFoundException exception = assertThrows(
+                MenuNotFoundException.class,
                 () -> menuService.getMenu(invalidId)
         );
 
@@ -156,8 +158,8 @@ class MenuServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> menuService.createMenu(menuDTO)
         );
 

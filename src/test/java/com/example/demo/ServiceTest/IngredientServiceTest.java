@@ -7,6 +7,8 @@ import com.example.demo.entities.Unit;
 import com.example.demo.repositories.IngredientRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.services.IngredientService;
+import com.example.exceptions.IngredientNotFoundException;
+import com.example.exceptions.RecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,8 +128,8 @@ class IngredientServiceTest {
         when(ingredientRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        IngredientNotFoundException exception = assertThrows(
+                IngredientNotFoundException.class,
                 () -> ingredientService.getIngredient(invalidId)
         );
 
@@ -160,8 +162,8 @@ class IngredientServiceTest {
         when(recipeRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        RecipeNotFoundException exception = assertThrows(
+                RecipeNotFoundException.class,
                 () -> ingredientService.createIngredient(ingredientDTO)
         );
 
