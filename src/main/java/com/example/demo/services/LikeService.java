@@ -10,6 +10,7 @@ import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.LikeRepository;
 import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,16 +38,13 @@ public class LikeService {
     }
 
     public LikeDTO getLike(Long id){
-        Like like =  likeRepository.findById(id).orElseThrow(() -> new RuntimeException("Like not found"));
+        Like like =  likeRepository.findById(id).orElseThrow(() -> new LikeNotFoundException("Like not found with id: " + id));
         return LikeMapper.toDTO(like);
     }
 
     public void deleteLikeByRecipeAndUser(Long recipeId, Long userId) {
         Like like = likeRepository.findByRecipeIdAndUserUserId(recipeId, userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Like not found"
-                ));
+                .orElseThrow(() -> new LikeNotFoundException("Like not found for recipe ID: " + recipeId + " and user ID: " + userId));
         likeRepository.delete(like);
     }
 
@@ -55,33 +53,21 @@ public class LikeService {
 
         if (likeDTO.getUserId() != null) {
             User user = userRepository.findById(likeDTO.getUserId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "User not found with id: " + likeDTO.getUserId()
-                    ));
+                    .orElseThrow(() -> new UserNotFoundException(likeDTO.getUserId()));
             like.setUser(user);
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "User ID is required"
-            );
+            throw new BadRequestException("User ID is required");
         }
 
         boolean hasRecipe = likeDTO.getRecipeId() != null;
         boolean hasComment = likeDTO.getCommentId() != null;
 
         if (hasRecipe && hasComment) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Like cannot be for both recipe and comment"
-            );
+            throw new BadRequestException("Like cannot be for both recipe and comment");
         }
 
         if (!hasRecipe && !hasComment) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Either recipe ID or comment ID is required"
-            );
+            throw new BadRequestException("Either recipe ID or comment ID is required");
         }
 
         if (hasRecipe) {
@@ -90,17 +76,11 @@ public class LikeService {
                     likeDTO.getRecipeId()
             );
             if (alreadyLiked) {
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "User already liked this recipe"
-                );
+                throw new LikeAlreadyExistsException("User already liked this recipe");
             }
 
             Recipe recipe = recipeRepository.findById(likeDTO.getRecipeId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Recipe not found with id: " + likeDTO.getRecipeId()
-                    ));
+                    .orElseThrow(() -> new RecipeNotFoundException(likeDTO.getRecipeId()));
             like.setRecipe(recipe);
         }
 
@@ -110,16 +90,10 @@ public class LikeService {
                     likeDTO.getCommentId()
             );
             if (alreadyLiked) {
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "User already liked this comment"
-                );
+                throw new LikeAlreadyExistsException("User already liked this comment");
             }
             Comment comment = commentRepository.findById(likeDTO.getCommentId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Comment not found with id: " + likeDTO.getCommentId()
-                    ));
+                    .orElseThrow(() -> new CommentNotFoundException(likeDTO.getCommentId()));
             like.setComment(comment);
         }
 
@@ -129,10 +103,7 @@ public class LikeService {
 
     public void deleteLikeByCommentAndUser(Long commentId, Long userId) {
         Like like = likeRepository.findByCommentIdAndUserUserId(commentId, userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Like not found"
-                ));
+                .orElseThrow(() -> new LikeNotFoundException("Like not found for comment ID: " + commentId + " and user ID: " + userId));
         likeRepository.delete(like);
     }
 
