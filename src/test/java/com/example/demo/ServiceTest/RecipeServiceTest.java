@@ -7,6 +7,9 @@ import com.example.demo.repositories.RecipeRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CurrentUserService;
 import com.example.demo.services.RecipeService;
+import com.example.exceptions.BadRequestException;
+import com.example.exceptions.RecipeNotFoundException;
+import com.example.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,8 +129,8 @@ class RecipeServiceTest {
         when(recipeRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        RecipeNotFoundException exception = assertThrows(
+                RecipeNotFoundException.class,
                 () -> recipeService.getRecipe(invalidId)
         );
 
@@ -158,8 +161,8 @@ class RecipeServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> recipeService.createRecipe(recipeDTO)
         );
 
@@ -174,8 +177,8 @@ class RecipeServiceTest {
         recipeDTO.setAuthorId(null);
 
         // Act & Assert
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
                 () -> recipeService.createRecipe(recipeDTO)
         );
 
