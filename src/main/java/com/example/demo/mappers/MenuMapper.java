@@ -27,7 +27,11 @@ public class MenuMapper {
         Menu menu = new Menu();
         menu.setName(menuDTO.getName());
         menu.setDescription(menuDTO.getDescription());
-        menu.setRecipes(menuDTO.getRecipes() != null ? menuDTO.getRecipes().stream().map(RecipeMapper::fromDTO).collect(Collectors.toList()) : new ArrayList<>());
+        menu.setRecipes(menuDTO.getRecipes() != null
+                ? menuDTO.getRecipes().stream()
+                .map(RecipeMapper::fromDTO).
+                collect(Collectors.toList())
+                : new ArrayList<>());
         return menu;
     }
 }

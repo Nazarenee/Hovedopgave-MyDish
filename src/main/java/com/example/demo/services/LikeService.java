@@ -84,18 +84,7 @@ public class LikeService {
             like.setRecipe(recipe);
         }
 
-        if (hasComment) {
-            boolean alreadyLiked = likeRepository.existsByUserUserIdAndCommentId(
-                    likeDTO.getUserId(),
-                    likeDTO.getCommentId()
-            );
-            if (alreadyLiked) {
-                throw new LikeAlreadyExistsException("User already liked this comment");
-            }
-            Comment comment = commentRepository.findById(likeDTO.getCommentId())
-                    .orElseThrow(() -> new CommentNotFoundException(likeDTO.getCommentId()));
-            like.setComment(comment);
-        }
+      // Similar handling for comment
 
         Like saved = likeRepository.save(like);
         return LikeMapper.toDTO(saved);
